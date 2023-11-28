@@ -27,14 +27,14 @@ public class Server {
 
 
 
-    public Server(int _port, int _threads_count) throws IOException, IllegalArgumentException {
+    public Server(String _hostname, int _port, int _threads_count) throws IOException, IllegalArgumentException {
         if (_threads_count < 1) {
             throw new IllegalArgumentException("Threads count must be grater then zero");
         }
 
-        m_http_server = HttpServer.create(new InetSocketAddress(_port), 0);
+        m_http_server = HttpServer.create(new InetSocketAddress(_hostname, _port), 0);
         HttpContext context = m_http_server.createContext("/load");
-        context.setHandler(Server::LoadHandler);
+        context.setHandler(Server::LoadFileRequestHandler);
 
         m_threads_count = _threads_count;
 
@@ -51,17 +51,21 @@ public class Server {
 
     public void Start() {
         m_http_server.start();
+        System.out.println( "=> [INFO] Server running..." );
     }
 
 
 
     public void Stop() {
         m_http_server.stop(0);
+        System.out.println( "=> [INFO] Server stopped" );
     }
 
 
 
-    private static void LoadHandler(HttpExchange _exchange) {
+    private static void LoadFileRequestHandler(HttpExchange _exchange) {
+        System.out.println("=> [INFO] Loading file request handler running...");
+
         String method = _exchange.getRequestMethod();
 
         if (!Objects.equals(method, "GET")) {
@@ -102,6 +106,8 @@ public class Server {
 
 
     private static void ProcessBody(HttpExchange _exchange) throws IOException {
+        System.out.println("=> [INFO] Processing request body...");
+
         try (InputStream body = _exchange.getRequestBody()) {
             JsonReader reader = Json.createReader(body);
 
@@ -145,6 +151,8 @@ public class Server {
 
     private static Pair<ArrayList<Integer>, String>
     OpenParallelFilePartsSendersForClient(String _filepath) throws IOException {
+        System.out.println("=> [INFO] Opening servers for parallel file loading...");
+
         String client_uuid = UUID.randomUUID().toString();
 
         SplitFile file = new SplitFile(_filepath, m_threads_count);
@@ -178,8 +186,12 @@ public class Server {
 
 
     private static void SendFilePart(HttpExchange _exchange) {
+        System.out.println("=> [INFO] Send file part request handler running...");
+
         try (JsonReader reader = Json.createReader(_exchange.getRequestBody())) {
             int number_of_part = reader.readObject().getInt("part");
+
+            System.out.println("=> [INFO] Requested part of file: " + number_of_part);
 
             SplitFile file = m_clients_files.get(_exchange.getRequestURI().toString().substring(1));
             String data = file.GetPart(number_of_part);
@@ -192,6 +204,8 @@ public class Server {
             body.close();
 
             _exchange.getHttpContext().getServer().stop(0);
+
+            System.out.println("=> [INFO] Server on address" + _exchange.getLocalAddress() + "' closed");
 
         } catch (IOException _ex) {
             System.out.println("=> [ERROR]: " + _ex.getMessage());

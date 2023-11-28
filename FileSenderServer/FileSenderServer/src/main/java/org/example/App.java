@@ -33,24 +33,17 @@ public class App
 
 
     public static void main( String[] args )  {
-
         System.out.println("\nPermitted commands:\n\t'close' - closing server\n");
 
-        System.out.println( "=> [INFO] Server running..." );
-
         try {
-            Server file_sender_server = new Server(8000, 6);
+            Server file_sender_server = new Server("127.0.0.1", 8000, 6);
             System.out.println("=> [INFO] Address: " + file_sender_server.GetAddress().toString());
             file_sender_server.Start();
-
             UserCommandsHandler();
-
             file_sender_server.Stop();
         }
         catch (IOException | InterruptedException _ex) {
             System.out.println("=> [ERROR]: " + _ex.getMessage());
         }
-
-        System.out.println( "=> [INFO] Server stopped" );
     }
 }
