@@ -12,7 +12,7 @@ public class SplitFile {
 
 
 
-    public SplitFile(String _filepath, int _amount_parts) throws IOException, IllegalArgumentException {
+    public SplitFile(String _filepath, int _amount_parts) throws IllegalArgumentException {
         if (_amount_parts < 1) {
             throw new IllegalArgumentException("Expected parts amount greater then zero");
         }
@@ -22,6 +22,9 @@ public class SplitFile {
 
         try (BufferedInputStream reader = new BufferedInputStream(new FileInputStream(_filepath))) {
             FillFileParts(reader.readAllBytes());
+        }
+        catch (IOException _ex) {
+            System.out.println("=> [ERROR]: " + _ex.getMessage());
         }
     }
 
@@ -36,7 +39,6 @@ public class SplitFile {
             m_file_parts.add(i, Arrays.copyOfRange(_file_data, begin, begin + part_size));
             begin += part_size;
         }
-
         m_file_parts.add(i, Arrays.copyOfRange(_file_data, begin, _file_data.length));
     }
 
@@ -50,4 +52,5 @@ public class SplitFile {
     public byte[] GetPart(int _part_number) {
         return m_file_parts.get(_part_number);
     }
+
 }

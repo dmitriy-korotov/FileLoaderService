@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -14,9 +15,9 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Optional;
+
 
 
 public class App extends Application {
@@ -28,6 +29,8 @@ public class App extends Application {
     private static TextField m_url_text_field;
     private static TextField m_save_path_text_field;
     private static Button m_browse_btn;
+    private static Button m_OK_btn;
+    private static Label m_log_field;
     private static final ArrayList<ProgressBar> m_progress_bars = new ArrayList<>();
 
 
@@ -76,14 +79,30 @@ public class App extends Application {
             m_url_text_field = (TextField) loader.getNamespace().get("url_field");
             m_save_path_text_field = (TextField) loader.getNamespace().get("saved_path_field");
             m_browse_btn = (Button) loader.getNamespace().get("browse_btn");
+            m_log_field = (Label) loader.getNamespace().get("log");
+            m_OK_btn = (Button) loader.getNamespace().get("OK");
 
             for (int i = 1; i < 7; i++) {
                 m_progress_bars.add((ProgressBar) loader.getNamespace().get("bar" + i));
             }
 
             m_browse_btn.setOnAction((ActionEvent _event) -> {
-                var error = BrowseButtonClickHandler();
-                error.ifPresent(s -> System.out.println("=> [ERROR]: " + s));
+                Thread.startVirtualThread(() -> {
+                    var error = BrowseButtonClickHandler();
+                    error.ifPresent(s -> System.out.println("=> [ERROR]: " + s));
+
+                    m_log_field.setVisible(true);
+                    //m_log_field.setText("File successfully loaded!");
+                    m_OK_btn.setVisible(true);
+                });
+            });
+
+            m_OK_btn.setOnAction((ActionEvent _event) -> {
+                m_OK_btn.setVisible(false);
+                m_log_field.setVisible(false);
+                for (var bar : m_progress_bars) {
+                    bar.setProgress(0);
+                }
             });
 
             return root;
@@ -143,4 +162,5 @@ public class App extends Application {
     private boolean IsValidOutputDirectory(String _dir) {
         return _dir != null;
     }
+
 }

@@ -25,13 +25,4 @@ public class FileBuilder {
         return m_file_parts.get(_index);
     }
 
-
-
-    /*public String Build() {
-        StringBuilder builder = new StringBuilder();
-        for (var part : m_file_parts) {
-            builder.append(part);
-        }
-        return builder.toString();
-    }*/
 }

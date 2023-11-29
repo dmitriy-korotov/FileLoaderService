@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="522.0" prefWidth="714.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<VBox xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar prefHeight="3.0" prefWidth="373.0">
         <menus>
@@ -26,45 +26,60 @@
           </Menu>
         </menus>
       </MenuBar>
-      <SplitPane dividerPositions="0.5333894500561167" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="550.0" prefWidth="812.0">
+      <SplitPane dividerPositions="0.1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="550.0" prefWidth="812.0">
         <items>
           <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                <children>
-                   <VBox layoutX="-2.0" layoutY="-2.0" prefHeight="197.0" prefWidth="378.0" AnchorPane.topAnchor="-2.0">
+                   <VBox layoutX="-2.0" layoutY="-2.0" prefHeight="550.0" prefWidth="378.0" AnchorPane.topAnchor="-2.0">
                        <padding>
-                           <Insets top="30.0"/>
+                           <Insets top="30.0" />
                        </padding>
                        <HBox alignment="CENTER" prefHeight="12.0" prefWidth="271.0">
                           <children>
-                              <Label prefHeight="30.0" prefWidth="70.0" text="URL"/>
-                              <TextField fx:id="url_field" minHeight="-Infinity" minWidth="-Infinity" prefHeight="29.0"
-                                         prefWidth="190.0"/>
+                              <Label prefHeight="30.0" prefWidth="70.0" text="URL" />
+                              <TextField fx:id="url_field" minHeight="-Infinity" minWidth="-Infinity" prefHeight="29.0" prefWidth="190.0" />
                           </children>
                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                           </padding>
                           <VBox.margin>
-                              <Insets/>
+                              <Insets />
                           </VBox.margin>
                        </HBox>
                        <HBox alignment="CENTER">
                           <children>
-                              <Label prefHeight="25.0" prefWidth="70.0" text="Saved path"/>
-                              <TextField fx:id="saved_path_field" prefHeight="31.0" prefWidth="190.0"/>
+                              <Label prefHeight="25.0" prefWidth="70.0" text="Saved path" />
+                              <TextField fx:id="saved_path_field" prefHeight="31.0" prefWidth="190.0" />
                           </children>
                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                           </padding>
                           <opaqueInsets>
-                              <Insets/>
+                              <Insets />
                           </opaqueInsets>
                        </HBox>
                        <HBox alignment="CENTER">
                           <children>
-                              <Button fx:id="browse_btn" contentDisplay="CENTER" mnemonicParsing="false"
-                                      prefHeight="30.0" prefWidth="115.0" text="Browse" textAlignment="CENTER"/>
+                              <Button fx:id="browse_btn" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="115.0" text="Browse" textAlignment="CENTER" />
                           </children>
                        </HBox>
+                     <HBox alignment="CENTER" prefHeight="387.0" prefWidth="378.0">
+                        <children>
+                           <VBox alignment="CENTER" spacing="10.0">
+                              <children>
+                                 <Label fx:id="log" alignment="CENTER" contentDisplay="CENTER" prefHeight="26.0" prefWidth="115.0" text="Successfull" textAlignment="CENTER" textFill="#00469c" visible="false">
+                                    <font>
+                                       <Font name="Berlin Sans FB Demi Bold" size="20.0" />
+                                    </font>
+                                 </Label>
+                                 <Button fx:id="OK" mnemonicParsing="false" prefHeight="28.0" prefWidth="111.0" text="OK" textFill="#004ca9" visible="false">
+                                    <font>
+                                       <Font name="Bodoni MT" size="14.0" />
+                                    </font></Button>
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
                    </VBox>
                </children>
             </AnchorPane>
@@ -159,7 +174,10 @@
                         <Insets left="50.0" top="20.0" />
                      </padding>
                   </VBox>
-               </children></AnchorPane>
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets></AnchorPane>
         </items>
       </SplitPane>
    </children>

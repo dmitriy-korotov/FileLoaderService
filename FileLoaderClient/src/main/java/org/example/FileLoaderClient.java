@@ -11,13 +11,11 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+
 
 
 public class FileLoaderClient {
@@ -27,16 +25,22 @@ public class FileLoaderClient {
     private final ThreadPoolExecutor m_pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(6);
     private final FileBuilder m_file_builder = new FileBuilder(6);
     private static ArrayList<ProgressBar> m_progress_bars;
+    private static String m_connection_address;
+    private int m_connection_port;
 
 
 
-    public FileBuilder LoadFileFrom(String _address, int _port, String _remote_filepath, ArrayList<ProgressBar> _progress_bars) throws IOException, InterruptedException {
-        String url = "http://" + _address + ":" + _port + "/load";
+    public FileBuilder LoadFileFrom(String _address,
+                                    int _port,
+                                    String _remote_filepath,
+                                    ArrayList<ProgressBar> _progress_bars) throws IOException, InterruptedException {
+
+        m_connection_address = _address;
+        m_connection_port = _port;
+
+        String url = "http://" + m_connection_address + ":" + m_connection_port + "/load";
 
         m_progress_bars = _progress_bars;
-        for (var bar : m_progress_bars) {
-            bar.setProgress(0);
-        }
 
         System.out.println("=> [INFO] Loading file from: " + url);
 
@@ -47,7 +51,19 @@ public class FileLoaderClient {
 
         var response = m_client.send(request, HttpResponse.BodyHandlers.ofInputStream());
 
-        try (InputStream body = response.body()) {
+        return HandleResponse(response);
+    }
+
+
+
+    public boolean IsLoaded() {
+        return m_is_loaded;
+    }
+
+
+
+    private FileBuilder HandleResponse(HttpResponse<InputStream> _response) {
+        try (InputStream body = _response.body()) {
             JsonReader reader = Json.createReader(body);
 
             JsonObject obj = reader.readObject();
@@ -55,7 +71,7 @@ public class FileLoaderClient {
             String uuid = obj.getString("URL");
             List<Integer> ports = obj.getJsonArray("ports").getValuesAs(val -> Integer.valueOf(val.toString()));
 
-            System.out.println(uuid);
+            System.out.println("=> [INFO] Loading process ID: " + uuid);
 
             int part_number = 0;
             for (var port : ports) {
@@ -63,11 +79,11 @@ public class FileLoaderClient {
                 m_pool.execute(() -> {
                     HttpClient file_part_loader = HttpClient.newHttpClient();
 
-                    String part_load_url = "http://" + _address + ":" + port + "/" + uuid;
+                    String part_load_url = "http://" + m_connection_address + ":" + port + "/" + uuid;
                     var request_for_part_loading = HttpRequest.newBuilder(URI.create(part_load_url)).
-                                                    header("accept", "application/json").
-                                                    POST(HttpRequest.BodyPublishers.ofString("{\"part\":" + finalPart_number + "}")).
-                                                    build();
+                            header("accept", "application/json").
+                            POST(HttpRequest.BodyPublishers.ofString("{\"part\":" + finalPart_number + "}")).
+                            build();
 
                     try {
                         var response_for_part = file_part_loader.send(request_for_part_loading, HttpResponse.BodyHandlers.ofInputStream());
@@ -118,11 +134,5 @@ public class FileLoaderClient {
         m_is_loaded = true;
 
         return m_file_builder;
-    }
-
-
-
-    public boolean IsLoaded() {
-        return m_is_loaded;
     }
 }

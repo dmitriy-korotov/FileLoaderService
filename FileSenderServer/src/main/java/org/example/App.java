@@ -10,6 +10,7 @@ public class App
     private static final Scanner m_scanner = new Scanner(System.in);
     private static final String m_close_command = "close";
     private static boolean m_application_running = true;
+    private static final int m_threads_count = 6;
 
 
 
@@ -36,7 +37,7 @@ public class App
         System.out.println("\nPermitted commands:\n\t'close' - closing server\n");
 
         try {
-            Server file_sender_server = new Server("127.0.0.1", 8000, 6);
+            Server file_sender_server = new Server("127.0.0.1", 80, m_threads_count);
             System.out.println("=> [INFO] Address: " + file_sender_server.GetAddress().toString());
             file_sender_server.Start();
             UserCommandsHandler();
