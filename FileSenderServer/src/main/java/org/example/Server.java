@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -24,6 +25,7 @@ public class Server {
     private static int m_threads_count = 1;
     private static HashMap<String, SplitFile> m_clients_files;
     private static final String m_filename_field_name = "file";
+    private static String m_resource_directory = "C:\\Users\\User\\MyProjects\\FileLoaderService\\FileSenderServer\\res";
 
 
 
@@ -39,6 +41,12 @@ public class Server {
         m_threads_count = _threads_count;
 
         m_clients_files = new HashMap<>();
+    }
+
+
+
+    public void SetResourceDirectory(String _dir) {
+        m_resource_directory = _dir;
     }
 
 
@@ -68,7 +76,7 @@ public class Server {
 
         String method = _exchange.getRequestMethod();
 
-        if (!Objects.equals(method, "GET")) {
+        if (!Objects.equals(method, "POST")) {
             System.out.println("=> [WARN] Incorrect request method: " + method);
 
             try {
@@ -94,7 +102,7 @@ public class Server {
         StringBuilder response_body = new StringBuilder();
         response_body.append("This method is not supported on the server.\n");
         response_body.append("Permitted methods:\n");
-        response_body.append("\tGET");
+        response_body.append("\tPOST");
 
         _exchange.sendResponseHeaders(400, response_body.length());
 
@@ -111,10 +119,8 @@ public class Server {
         try (InputStream body = _exchange.getRequestBody()) {
             JsonReader reader = Json.createReader(body);
 
-            JsonObject object = reader.readObject();
-
-            String filepath = object.getString(m_filename_field_name);
-
+            String filepath = reader.readObject().getString(m_filename_field_name);
+            filepath = m_resource_directory + filepath;
             if (!new File(filepath).exists()) {
                 StringBuilder response = new StringBuilder();
                 response.append("=> [WARN] File: '");
@@ -140,10 +146,13 @@ public class Server {
                                         add("URL", pair.getSecond()).
                                         add("ports", array_builder.build()).build();
 
-            _exchange.sendResponseHeaders(200, response.size());
+            _exchange.sendResponseHeaders(200, response.toString().length());
             OutputStream response_body = _exchange.getResponseBody();
             response_body.write(response.toString().getBytes());
             response_body.close();
+        }
+        catch (Exception _ex) {
+            System.out.println("=> [ERROR]: " + _ex.getMessage());
         }
     }
 
@@ -167,7 +176,7 @@ public class Server {
             HttpContext context = file_part_sender.createContext("/" + client_uuid);
             context.setHandler(Server::SendFilePart);
 
-            ports.set(i, file_part_sender.getAddress().getPort());
+            ports.add(i, file_part_sender.getAddress().getPort());
 
             Thread.ofPlatform().daemon(true).start(() -> {
                 Server.RunFilePartSender(file_part_sender);
@@ -194,13 +203,11 @@ public class Server {
             System.out.println("=> [INFO] Requested part of file: " + number_of_part);
 
             SplitFile file = m_clients_files.get(_exchange.getRequestURI().toString().substring(1));
-            String data = file.GetPart(number_of_part);
+            byte[] data = file.GetPart(number_of_part);
 
-            JsonObject response = Json.createObjectBuilder().add("data", data).build();
-
-            _exchange.sendResponseHeaders(200, response.size());
+            _exchange.sendResponseHeaders(200, data.length);
             OutputStream body = _exchange.getResponseBody();
-            body.write(response.toString().getBytes());
+            body.write(data);
             body.close();
 
             _exchange.getHttpContext().getServer().stop(0);

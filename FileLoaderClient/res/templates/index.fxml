@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="522.0" prefWidth="714.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <MenuBar prefHeight="3.0" prefWidth="373.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <SplitPane dividerPositions="0.5333894500561167" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="550.0" prefWidth="812.0">
+        <items>
+          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+               <children>
+                   <VBox layoutX="-2.0" layoutY="-2.0" prefHeight="197.0" prefWidth="378.0" AnchorPane.topAnchor="-2.0">
+                       <padding>
+                           <Insets top="30.0"/>
+                       </padding>
+                       <HBox alignment="CENTER" prefHeight="12.0" prefWidth="271.0">
+                          <children>
+                              <Label prefHeight="30.0" prefWidth="70.0" text="URL"/>
+                              <TextField fx:id="url_field" minHeight="-Infinity" minWidth="-Infinity" prefHeight="29.0"
+                                         prefWidth="190.0"/>
+                          </children>
+                          <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                          </padding>
+                          <VBox.margin>
+                              <Insets/>
+                          </VBox.margin>
+                       </HBox>
+                       <HBox alignment="CENTER">
+                          <children>
+                              <Label prefHeight="25.0" prefWidth="70.0" text="Saved path"/>
+                              <TextField fx:id="saved_path_field" prefHeight="31.0" prefWidth="190.0"/>
+                          </children>
+                          <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                          </padding>
+                          <opaqueInsets>
+                              <Insets/>
+                          </opaqueInsets>
+                       </HBox>
+                       <HBox alignment="CENTER">
+                          <children>
+                              <Button fx:id="browse_btn" contentDisplay="CENTER" mnemonicParsing="false"
+                                      prefHeight="30.0" prefWidth="115.0" text="Browse" textAlignment="CENTER"/>
+                          </children>
+                       </HBox>
+                   </VBox>
+               </children>
+            </AnchorPane>
+          <AnchorPane minWidth="500.0">
+               <children>
+                  <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="26.0" prefWidth="203.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="35.0" prefWidth="215.0" text="Progress" textAlignment="CENTER" textFill="#00165e">
+                                 <font>
+                                    <Font name="Droid Sans Mono" size="36.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <Separator prefHeight="1.0" prefWidth="476.0" />
+                        <HBox spacing="20.0">
+                           <children>
+                              <Label alignment="CENTER" contentDisplay="CENTER" text="Thread 1">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <graphic>
+                                    <ProgressBar fx:id="bar1" prefHeight="30.0" prefWidth="400.0" progress="0.0" />
+                                 </graphic>
+                              </Label>
+                           </children>
+                        </HBox>
+                         <HBox spacing="20.0">
+                             <children>
+                                 <Label alignment="CENTER" contentDisplay="CENTER" text="Thread 2">
+                                     <font>
+                                         <Font size="14.0" />
+                                     </font>
+                                     <graphic>
+                                         <ProgressBar fx:id="bar2" prefHeight="30.0" prefWidth="400.0" progress="0.0" />
+                                     </graphic>
+                                 </Label>
+                             </children>
+                         </HBox>
+                         <HBox spacing="20.0">
+                             <children>
+                                 <Label alignment="CENTER" contentDisplay="CENTER" text="Thread 3">
+                                     <font>
+                                         <Font size="14.0" />
+                                     </font>
+                                     <graphic>
+                                         <ProgressBar fx:id="bar3" prefHeight="30.0" prefWidth="400.0" progress="0.0" />
+                                     </graphic>
+                                 </Label>
+                             </children>
+                         </HBox>
+                         <HBox spacing="20.0">
+                             <children>
+                                 <Label alignment="CENTER" contentDisplay="CENTER" text="Thread 4">
+                                     <font>
+                                         <Font size="14.0" />
+                                     </font>
+                                     <graphic>
+                                         <ProgressBar fx:id="bar4" prefHeight="30.0" prefWidth="400.0" progress="0.0" />
+                                     </graphic>
+                                 </Label>
+                             </children>
+                         </HBox>
+                         <HBox spacing="20.0">
+                             <children>
+                                 <Label alignment="CENTER" contentDisplay="CENTER" text="Thread 5">
+                                     <font>
+                                         <Font size="14.0" />
+                                     </font>
+                                     <graphic>
+                                         <ProgressBar fx:id="bar5" prefHeight="30.0" prefWidth="400.0" progress="0.0" />
+                                     </graphic>
+                                 </Label>
+                             </children>
+                         </HBox>
+                         <HBox spacing="20.0">
+                             <children>
+                                 <Label alignment="CENTER" contentDisplay="CENTER" text="Thread 6">
+                                     <font>
+                                         <Font size="14.0" />
+                                     </font>
+                                     <graphic>
+                                         <ProgressBar fx:id="bar6" prefHeight="30.0" prefWidth="400.0" progress="0.0" />
+                                     </graphic>
+                                 </Label>
+                             </children>
+                         </HBox>
+                     </children>
+                     <padding>
+                        <Insets left="50.0" top="20.0" />
+                     </padding>
+                  </VBox>
+               </children></AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</VBox>
