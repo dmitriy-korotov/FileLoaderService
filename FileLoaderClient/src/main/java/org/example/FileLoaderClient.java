@@ -33,7 +33,7 @@ public class FileLoaderClient {
     public FileBuilder LoadFileFrom(String _address,
                                     int _port,
                                     String _remote_filepath,
-                                    ArrayList<ProgressBar> _progress_bars) throws IOException, InterruptedException {
+                                    ArrayList<ProgressBar> _progress_bars) throws Exception {
 
         m_connection_address = _address;
         m_connection_port = _port;
@@ -62,7 +62,7 @@ public class FileLoaderClient {
 
 
 
-    private FileBuilder HandleResponse(HttpResponse<InputStream> _response) {
+    private FileBuilder HandleResponse(HttpResponse<InputStream> _response) throws Exception {
         try (InputStream body = _response.body()) {
             JsonReader reader = Json.createReader(body);
 
@@ -111,9 +111,15 @@ public class FileLoaderClient {
                         }
                         catch (Exception _ex) {
                             System.out.println("=> [ERROR]: " + _ex.getMessage());
+                            throw new Exception("Can't load file");
                         }
-                    } catch (IOException | InterruptedException _ex) {
+                    } catch (Exception _ex) {
                         System.out.println("=> [ERROR]: " + _ex.getMessage());
+                        try {
+                            throw new Exception("Can't load file");
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 });
                 part_number++;
@@ -127,6 +133,7 @@ public class FileLoaderClient {
         }
         catch (Exception _ex) {
             System.out.println("=> [ERROR]: " + _ex.getMessage());
+            throw new Exception("Can't load file");
         }
 
         System.out.println("=> [INFO] File is loaded");

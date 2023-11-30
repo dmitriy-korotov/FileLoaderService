@@ -10,11 +10,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.Light;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.*;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -89,11 +94,19 @@ public class App extends Application {
             m_browse_btn.setOnAction((ActionEvent _event) -> {
                 Thread.startVirtualThread(() -> {
                     var error = BrowseButtonClickHandler();
-                    error.ifPresent(s -> System.out.println("=> [ERROR]: " + s));
 
                     m_log_field.setVisible(true);
-                    //m_log_field.setText("File successfully loaded!");
                     m_OK_btn.setVisible(true);
+
+                    if (error.isEmpty()) {
+                        m_log_field.setTextFill(Color.color(0, 1, 0));
+                        m_log_field.setText("File successfully loaded!");
+                        m_OK_btn.setTextFill(Color.color(0, 1, 0));
+                    } else {
+                        m_log_field.setTextFill(Color.color(1, 0, 0));
+                        m_log_field.setText(error.get());
+                        m_OK_btn.setTextFill(Color.color(1, 0, 0));
+                    }
                 });
             });
 
@@ -118,19 +131,31 @@ public class App extends Application {
     public Optional<String> BrowseButtonClickHandler() {
         String url = m_url_text_field.getText();
         if (!IsValidURL(url)) {
-            return Optional.of("URL is no valid");
+            return Optional.of("URL is no valid!");
         }
 
         String output_dir = m_save_path_text_field.getText();
         if (!IsValidOutputDirectory(output_dir)) {
-            return Optional.of("Save path is no valid");
+            return Optional.of("Save path is no valid!");
         }
 
         FileLoaderClient loader = new FileLoaderClient();
 
-        String host = URI.create(url).getHost();
-        int port = URI.create(url).getPort();
-        String filepath = URI.create(url).getPath();
+        URI uri = URI.create(url);
+
+        String host = uri.getHost();
+        int port = uri.getPort();
+        String filepath = uri.getPath();
+
+        if (host == null || port == -1 || filepath == null) {
+            if (host == null) {
+                return Optional.of("Invalid host!");
+            } else if (port == -1) {
+                return Optional.of("Invalid port!");
+            }else {
+                return Optional.of("Invalid filepath!");
+            }
+        }
 
         try {
             FileBuilder file_builder = loader.LoadFileFrom(host, port, filepath, m_progress_bars);
@@ -146,6 +171,9 @@ public class App extends Application {
         }
         catch (IOException | InterruptedException _ex) {
             System.out.println("=> [ERROR]: " + _ex.getMessage());
+            return Optional.of("Load file error: " + _ex.getMessage());
+        } catch (Exception _ex) {
+            return Optional.of("Load file error: " + _ex.getMessage());
         }
 
         return Optional.empty();
